@@ -1,5 +1,20 @@
 # Online learning
-
+## LwF.MC
+Learning without Forgetting for multi-class.
+- The code is referenced from [here](https://github.com/DRSAD/Implementation-of-Learning-without-Forgetting-for-multi-class).
+![LwF algorithm](images/LwF_algorithm.png)
+![LwF framework](images/LwF_framework.png)
+- the calculation of loss is similar as iCaRL.
+- after training, the old_model needs to be updated:
+```python
+def afterTrain(self,accuracy):
+    self.numclass+=self.task_size
+    filename='model/5_increment:%d_net.pkl' % (self.numclass-self.task_size)
+    torch.save(self.model,filename)
+    self.old_model=torch.load(filename)
+    self.old_model.to(device)
+    self.old_model.eval()
+```
 ## iCaRL
 
 Reference from [here](https://github.com/DRSAD/iCaRL).
@@ -88,3 +103,13 @@ def _construct_exemplar_set(self, images, m):
     self.exemplar_set.append(exemplar)
     # self.exemplar_set.append(images)
 ```
+
+## Experience Replay (ER)
+- ER simply trains the model with the incoming and memory mini-batches together using the cross-entropy loss.
+- It applies reservoir sampling strategy to update the buffer in memory:
+![reservoir sampling](images/reservoir_sampling.png)
+
+## Maximally Interfered Retrieval (MIR)
+Online Continual Learning with Maximally Interfered Retrieval
+- [code](https://github.com/optimass/Maximally_Interfered_Retrieval)
+- MIR chooses replay samples according to the loss increases given the estimated parameter update based on the incoming mini-batch.
